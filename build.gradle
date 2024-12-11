@@ -1,0 +1,14 @@
+group 'com.teamtreehouse'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.hibernate.orm:hibernate-core:6.5.2.Final'
+    implementation 'com.h2database:h2:2.2.224'
+    testImplementation 'javax.transaction:jta:1.1'
+}
