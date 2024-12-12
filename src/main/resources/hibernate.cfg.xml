@@ -10,8 +10,10 @@
         <!-- SQL Dialect -->
         <property name="dialect">org.hibernate.dialect.H2Dialect</property>
 
-        <!-- Entity Mapping-->
-        <mapping class="com.teamtreehouse.countrymgr.Country"/>
+        <!-- Create the database schema on startup -->
+        <property name="hbm2ddl.auto">create</property>
 
+        <!-- Entity Mapping-->
+        <mapping class="com.teamtreehouse.countrymgr.model.Country"/>
     </session-factory>
 </hibernate-configuration>
