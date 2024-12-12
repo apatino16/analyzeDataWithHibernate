@@ -11,7 +11,7 @@
         <property name="dialect">org.hibernate.dialect.H2Dialect</property>
 
         <!-- Entity Mapping-->
-        <mapping class="com.teamtreehouse.Country"/>
+        <mapping class="com.teamtreehouse.countrymgr.Country"/>
 
     </session-factory>
 </hibernate-configuration>
