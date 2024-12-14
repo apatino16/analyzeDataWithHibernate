@@ -12,6 +12,7 @@ import org.hibernate.service.ServiceRegistry;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.Scanner;
 
 public class Application {
     // Hold a reusable reference to a SessionFactory
@@ -24,27 +25,29 @@ public class Application {
 
     }
 
-    // TODO: This data should come from the database? Not manually
-    public static void main(String[] args){
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
 
-        // Fetch all countries
-        List<Country> countries = fetchAllCountries();
+        // Main menu
+        System.out.println("1. View all countries");
+        System.out.println("2. Display analysis");
+        System.out.println("3. Edit a country");
+        System.out.println("4. Add a new country");
+        System.out.print("Choose an option: ");
+        int option = scanner.nextInt();
+        scanner.nextLine();
 
-        // Display all countries
-        displayCountries(countries);
-
-        // Display basic statistics
-        displayStatistics(countries);
-
-        /*
-        Country country = new Country.CountryBuilder("USA", "United States")
-                .withInternetUsers(getInternetUsers)
-                .withAdultLiteracyRate(adultLiteracyRate)
-                .build();
-        save(country);
-
-        // Display a list of countries
-        fetchAllCountries().forEach(System.out::println); */
+        switch (option) {
+            case 1 -> displayCountries(fetchAllCountries());
+            case 2 -> displayStatistics(fetchAllCountries());
+            case 3 -> {
+                System.out.println("Enter the code of the country to edit:");
+                String code = scanner.nextLine().toUpperCase();
+                update(Country);
+            }
+            case 4 -> addCountry(scanner);
+            default -> System.out.println("Invalid option");
+        }
     }
 
     // Fetch all countries from the database
@@ -70,23 +73,6 @@ public class Application {
         return countries;
     }
 
-    private static void save(Country country){
-        // Open session
-        Session session = sessionFactory.openSession();
-
-        // Begin Transaction
-        session.beginTransaction();
-
-        // Use the session to save the Country
-        session.save(country);
-
-        // Commit the transaction
-        session.getTransaction().commit();
-
-        // Close the session
-        session.close();
-    }
-
     private static void displayCountries(List<Country> countries){
         System.out.printf("%-3s %-32s %-11s %-11s%n", "Code", "Name", "Internet Users (%)", "Adult Literacy Rate (%)");
         System.out.println("----------------------------------------------------------------------------------------");
@@ -98,10 +84,6 @@ public class Application {
                     formatNumber(country.getInternetUsers()),
                     formatNumber(country.getAdultLiteracyRate()));
         }
-    }
-
-    private static String formatNumber (Float number) {
-        return number == null ? "--" : String.format("%.2f", number);
     }
 
     private static void displayStatistics(List<Country> countries) {
@@ -139,6 +121,108 @@ public class Application {
                 "Adult Literacy Rate (%)",
                 maxLiteracyRate.map(c-> formatNumber(c.getAdultLiteracyRate())).orElse("--"),
                 minInternetUsers.map(c-> formatNumber(c.getAdultLiteracyRate())).orElse("--"));
-        
+
+    }
+
+    private static Country findCountryByCode(String code){
+        // Open a Session
+        Session session = sessionFactory.openSession();
+
+        // Retrieve the persistent object (or null if not found)
+        Country country = session.get(Country.class, code);
+
+        // Close the session
+        session.close();
+
+        // Return the object
+        return country;
+    }
+
+    private static void update(Country country){
+        // Open a session
+        Session session = sessionFactory.openSession();
+
+        // Begin a transaction
+        session.beginTransaction();
+
+        // Use the session to update the contact
+        session.merge(country);
+
+        // Commit the transaction
+        session.getTransaction().commit();
+
+        // Close the session
+        session.close();
+
+    }
+
+
+
+    private static String save(Country country){
+        // Open session
+        Session session = sessionFactory.openSession();
+
+        // Begin Transaction
+        session.beginTransaction();
+
+        // Use the session to save the Country
+        String code = (String) session.save(country);
+
+        // Commit the transaction
+        session.getTransaction().commit();
+
+        // Close the session
+        session.close();
+
+        return code;
+    }
+
+    private static void addCountry(Scanner scanner) {
+        System.out.println("Enter details for the new country:");
+
+        // Prompt for country fields
+        System.out.print("Code (3 characters): ");
+        String code = scanner.nextLine().toUpperCase();
+
+        System.out.print("Name: ");
+        String name = scanner.nextLine();
+
+        System.out.print("Internet Users (%): ");
+        String internetUsersInput = scanner.nextLine();
+        Float internetUsers = null;
+        if (!internetUsersInput.isEmpty()) {
+            try {
+                internetUsers = Float.parseFloat(internetUsersInput);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format for Internet Users. Setting to null.");
+            }
+        }
+
+        System.out.print("Adult Literacy Rate (%): ");
+        String literacyRateInput = scanner.nextLine();
+        Float adultLiteracyRate = null;
+        if (!literacyRateInput.isEmpty()) {
+            try {
+                adultLiteracyRate = Float.parseFloat(literacyRateInput);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number format for Adult Literacy Rate. Setting to null.");
+            }
+        }
+
+        // Use the Builder Patter to create a new Country Object
+        Country newCountry = new Country.CountryBuilder(code, name)
+                .withInternetUsers(internetUsers)
+                .withAdultLiteracyRate(adultLiteracyRate)
+                .build();
+        // Save the new country to the database
+        save(newCountry);
+
+        System.out.println("New country added sucessfully: " + newCountry);
+    }
+
+
+
+    private static String formatNumber (Float number) {
+        return number == null ? "--" : String.format("%.2f", number);
     }
 }
