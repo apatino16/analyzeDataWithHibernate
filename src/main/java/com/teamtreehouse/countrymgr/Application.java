@@ -9,7 +9,9 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 public class Application {
     // Hold a reusable reference to a SessionFactory
@@ -24,6 +26,17 @@ public class Application {
 
     // TODO: This data should come from the database? Not manually
     public static void main(String[] args){
+
+        // Fetch all countries
+        List<Country> countries = fetchAllCountries();
+
+        // Display all countries
+        displayCountries(countries);
+
+        // Display basic statistics
+        displayStatistics(countries);
+
+        /*
         Country country = new Country.CountryBuilder("USA", "United States")
                 .withInternetUsers(getInternetUsers)
                 .withAdultLiteracyRate(adultLiteracyRate)
@@ -31,7 +44,7 @@ public class Application {
         save(country);
 
         // Display a list of countries
-        fetchAllCountries().forEach(System.out::println);
+        fetchAllCountries().forEach(System.out::println); */
     }
 
     // Fetch all countries from the database
@@ -89,5 +102,43 @@ public class Application {
 
     private static String formatNumber (Float number) {
         return number == null ? "--" : String.format("%.2f", number);
+    }
+
+    private static void displayStatistics(List<Country> countries) {
+        System.out.println("\nAnalysis: Basic Statistics");
+        System.out.println("----------------------------------------------------------------------------------------");
+
+        // Internet User
+        Optional<Country> maxInternetUsers = countries.stream()
+                .filter(c -> c.getInternetUsers() != null)
+                .max(Comparator.comparing(Country::getInternetUsers));
+
+        Optional<Country> minInternetUsers = countries.stream()
+                .filter(c -> c.getInternetUsers() != null)
+                .min(Comparator.comparing(Country::getInternetUsers));
+
+        // Adult Literacy Rate
+        Optional<Country> maxLiteracyRate = countries.stream()
+                .filter(c -> c.getAdultLiteracyRate() != null)
+                .max(Comparator.comparing(Country::getAdultLiteracyRate));
+
+        Optional<Country> minLiteracyRate = countries.stream()
+                .filter(c -> c.getAdultLiteracyRate() != null)
+                .min(Comparator.comparing(Country::getAdultLiteracyRate));
+
+        // Display Statistics
+        System.out.printf("%-35s %-10s %-10s%n", "Indicator", "Max", "Min");
+        System.out.println("----------------------------------------------------------------------------------------");
+
+        System.out.printf("%-35s %-10s %-10s%n",
+                "Internet Users (%)",
+                maxInternetUsers.map(c-> formatNumber(c.getInternetUsers())).orElse("--"),
+                minInternetUsers.map(c-> formatNumber(c.getInternetUsers())).orElse("--"));
+
+        System.out.printf("%-35s %-10s %-10s%n",
+                "Adult Literacy Rate (%)",
+                maxLiteracyRate.map(c-> formatNumber(c.getAdultLiteracyRate())).orElse("--"),
+                minInternetUsers.map(c-> formatNumber(c.getAdultLiteracyRate())).orElse("--"));
+        
     }
 }

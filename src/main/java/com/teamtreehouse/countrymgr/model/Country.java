@@ -12,10 +12,10 @@ public class Country{
     private String name;
 
     @Column(precision = 11, scale = 8)
-    private float internetUsers;
+    private Float internetUsers;
 
     @Column(precision = 11, scale = 8)
-    private float adultLiteracyRate;
+    private Float adultLiteracyRate;
 
     // Default Constructor for JPA
     public Country(){}
@@ -39,11 +39,11 @@ public class Country{
     }
 
     // Getters and Setters
-    public float getInternetUsers() {
+    public Float getInternetUsers() {
         return internetUsers;
     }
 
-    public void setInternetUsers(float internetUsers) {
+    public void setInternetUsers(Float internetUsers) {
         this.internetUsers = internetUsers;
     }
 
@@ -63,11 +63,11 @@ public class Country{
         this.code = code;
     }
 
-    public float getAdultLiteracyRate() {
+    public Float getAdultLiteracyRate() {
         return adultLiteracyRate;
     }
 
-    public void setAdultLiteracyRate(float adultLiteracyRate) {
+    public void setAdultLiteracyRate(Float adultLiteracyRate) {
         this.adultLiteracyRate = adultLiteracyRate;
     }
 
@@ -75,20 +75,20 @@ public class Country{
     public static class CountryBuilder {
         private String code;
         private String name;
-        private float internetUsers;
-        private float adultLiteracyRate;
+        private Float internetUsers;
+        private Float adultLiteracyRate;
 
         public CountryBuilder(String code, String name){
             this.code = code;
             this.name = name;
         }
 
-        public CountryBuilder withInternetUsers(float internetUsers){
+        public CountryBuilder withInternetUsers(Float internetUsers){
             this.internetUsers = internetUsers;
             return this;
         }
 
-        public CountryBuilder withAdultLiteracyRate(float adultLiteracyRate){
+        public CountryBuilder withAdultLiteracyRate(Float adultLiteracyRate){
             this.adultLiteracyRate = adultLiteracyRate;
             return this;
         }
