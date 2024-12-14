@@ -43,7 +43,13 @@ public class Application {
             case 3 -> {
                 System.out.println("Enter the code of the country to edit:");
                 String code = scanner.nextLine().toUpperCase();
-                update(Country);
+                Country country = findCountryByCode(code);
+                if (country != null) {
+                    System.out.println("Editing Country: " + country);
+                    editCountry(country, scanner);
+                } else {
+                    System.out.println("Country not found.");
+                }
             }
             case 4 -> addCountry(scanner);
             default -> System.out.println("Invalid option");
@@ -156,8 +162,6 @@ public class Application {
 
     }
 
-
-
     private static String save(Country country){
         // Open session
         Session session = sessionFactory.openSession();
@@ -177,6 +181,38 @@ public class Application {
         return code;
     }
 
+    private static void editCountry(Country country, Scanner scanner) {
+        System.out.println("Press Enter to keep the current value.");
+        System.out.print("New name [" + country.getName() + "]: ");
+        String name = scanner.nextLine();
+        if (!name.isEmpty()){
+            country.setName(name);
+        }
+
+        System.out.print("New internet users [" + formatNumber(country.getInternetUsers()) + "]: ");
+        String internetUsersInput = scanner.nextLine();
+        if (!internetUsersInput.isEmpty()){
+            try{
+                country.setInternetUsers(Float.parseFloat(internetUsersInput));
+            } catch (NumberFormatException e){
+                System.out.println("Invalid number format. Keeping current value.");
+            }
+        }
+
+        System.out.print("New adult literacy rate [" + formatNumber(country.getAdultLiteracyRate()) + "]: ");
+        String literacyRateInput = scanner.nextLine();
+        if (!literacyRateInput.isEmpty()){
+            try{
+                country.setAdultLiteracyRate(Float.parseFloat(literacyRateInput));
+            } catch (NumberFormatException e){
+                System.out.println("Invalid number format. Keeping current value");
+            }
+        }
+
+        // Save updates
+        update(country);
+        System.out.println("Country updated sucessfully: " + country);
+    }
     private static void addCountry(Scanner scanner) {
         System.out.println("Enter details for the new country:");
 
