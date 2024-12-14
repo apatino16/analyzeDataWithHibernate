@@ -10,8 +10,11 @@
         <!-- SQL Dialect -->
         <property name="dialect">org.hibernate.dialect.H2Dialect</property>
 
-        <!-- Create the database schema on startup -->
-        <property name="hbm2ddl.auto">create</property>
+        <!-- Update the database schema on startup -->
+        <property name="hbm2ddl.auto">update</property>
+
+        <!-- Show the queries prepared by Hibernate -->
+        <property name="show_sql">true</property>
 
         <!-- Entity Mapping-->
         <mapping class="com.teamtreehouse.countrymgr.model.Country"/>
