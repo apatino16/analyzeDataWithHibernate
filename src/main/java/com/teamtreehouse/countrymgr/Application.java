@@ -6,7 +6,6 @@ import jakarta.persistence.criteria.CriteriaQuery;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.boot.MetadataSources;
-import org.hibernate.boot.registry.StandardServiceRegistry;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 
@@ -23,8 +22,9 @@ public class Application {
 
     }
 
+    // TODO: This data should come from the database? Not manually
     public static void main(String[] args){
-        Country country = new Country.CountryBuilder("")
+        Country country = new Country.CountryBuilder("USA", "United States")
                 .withInternetUsers(getInternetUsers)
                 .withAdultLiteracyRate(adultLiteracyRate)
                 .build();
@@ -72,5 +72,22 @@ public class Application {
 
         // Close the session
         session.close();
+    }
+
+    private static void displayCountries(List<Country> countries){
+        System.out.printf("%-3s %-32s %-11s %-11s%n", "Code", "Name", "Internet Users (%)", "Adult Literacy Rate (%)");
+        System.out.println("----------------------------------------------------------------------------------------");
+
+        for (Country country : countries){
+            System.out.printf("%-3s %-32s %-11s %-11s%n",
+                    country.getCode(),
+                    country.getName(),
+                    formatNumber(country.getInternetUsers()),
+                    formatNumber(country.getAdultLiteracyRate()));
+        }
+    }
+
+    private static String formatNumber (Float number) {
+        return number == null ? "--" : String.format("%.2f", number);
     }
 }

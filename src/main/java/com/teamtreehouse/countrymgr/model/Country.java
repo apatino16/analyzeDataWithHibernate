@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 public class Country{
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private String code;
 
     @Column(length = 32)
@@ -21,7 +20,9 @@ public class Country{
     // Default Constructor for JPA
     public Country(){}
 
+    // Constructor with Builder
     public Country(CountryBuilder builder){
+        this.code = builder.code;
         this.name = builder.name;
         this.internetUsers = builder.internetUsers;
         this.adultLiteracyRate = builder.adultLiteracyRate;
@@ -70,13 +71,15 @@ public class Country{
         this.adultLiteracyRate = adultLiteracyRate;
     }
 
-    // builder pattern
+    // Builder Pattern
     public static class CountryBuilder {
+        private String code;
         private String name;
         private float internetUsers;
         private float adultLiteracyRate;
 
-        public CountryBuilder(String name){
+        public CountryBuilder(String code, String name){
+            this.code = code;
             this.name = name;
         }
 
@@ -93,8 +96,5 @@ public class Country{
         public Country build(){
             return new Country(this);
         }
-
-
     }
-
 };
