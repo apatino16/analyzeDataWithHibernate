@@ -35,31 +35,39 @@ public class Application {
         System.out.println("3. Edit a country");
         System.out.println("4. Add a new country");
         System.out.println("5. Delete a country");
+        System.out.println("6. Display Averages");
         System.out.print("Choose an option: ");
-        int option = scanner.nextInt();
-        scanner.nextLine();
 
-        switch (option) {
-            case 1 -> displayCountries(fetchAllCountries());
-            case 2 -> displayStatistics(fetchAllCountries());
-            case 3 -> {
-                System.out.println("Enter the code of the country to edit:");
-                String code = scanner.nextLine().toUpperCase();
-                Country country = findCountryByCode(code);
-                if (country != null) {
-                    System.out.println("Editing Country: " + country);
-                    editCountry(country, scanner);
-                } else {
-                    System.out.println("Country not found.");
+        try {
+            int option = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (option) {
+                case 1 -> displayCountries(fetchAllCountries());
+                case 2 -> displayStatistics(fetchAllCountries());
+                case 3 -> {
+                    System.out.println("Enter the code of the country to edit:");
+                    String code = scanner.nextLine().toUpperCase();
+                    Country country = findCountryByCode(code);
+                    if (country != null) {
+                        System.out.println("Editing Country: " + country);
+                        editCountry(country, scanner);
+                    } else {
+                        System.out.println("Country not found.");
+                    }
                 }
+                case 4 -> addCountry(scanner);
+                case 5 -> {
+                    System.out.println("Enter the code of the country to delete: ");
+                    String countryToDelete = scanner.nextLine().toUpperCase();
+                    deleteCountry(countryToDelete);
+                }
+                case 6 -> displayAverages(fetchAllCountries());
+                default -> System.out.println("Invalid option");
             }
-            case 4 -> addCountry(scanner);
-            case 5 -> {
-                System.out.println("Enter the code of the country to delete: ");
-                String countryToDelete = scanner.nextLine().toUpperCase();
-                deleteCountry(countryToDelete);
-            }
-            default -> System.out.println("Invalid option");
+        } catch (Exception e) {
+            System.out.println("Invalid input. Please enter a valid option.");
+            scanner.nextLine();
         }
     }
 
