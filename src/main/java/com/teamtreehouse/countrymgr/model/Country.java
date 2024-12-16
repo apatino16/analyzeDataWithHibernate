@@ -11,10 +11,10 @@ public class Country{
     @Column(length = 32)
     private String name;
 
-    @Column(precision = 11, scale = 8)
+    @Column
     private Float internetUsers;
 
-    @Column(precision = 11, scale = 8)
+    @Column
     private Float adultLiteracyRate;
 
     // Default Constructor for JPA
