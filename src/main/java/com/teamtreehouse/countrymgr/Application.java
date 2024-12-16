@@ -9,6 +9,7 @@ import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.service.ServiceRegistry;
 
+import java.sql.SQLOutput;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -219,7 +220,7 @@ public class Application {
         update(country);
         System.out.println("Country updated successfully: " + country);
     }
-    
+
     private static void addCountry(Scanner scanner) {
         System.out.println("Enter details for the new country:");
 
@@ -277,6 +278,27 @@ public class Application {
         }
 
         session.close();
+    }
+
+    // Calculate averages
+    private static void displayAverages(List<Country> countries) {
+        System.out.println("\nAnalysis: Averages");
+        System.out.println("----------------------------------------------------------------------------------------");
+
+        double avgInternetUsers = countries.stream()
+                .filter(c -> c.getInternetUsers() != null)
+                .mapToDouble(Country::getInternetUsers)
+                .average()
+                .orElse(0.0);
+
+        double avgLiteracyRate = countries.stream()
+                .filter(c -> c.getAdultLiteracyRate() != null)
+                .mapToDouble(Country::getAdultLiteracyRate)
+                .average()
+                .orElse(0.0);
+
+        System.out.printf("%-35s %-10.2f%n", "Average Internet Users (%)", avgInternetUsers);
+        System.out.printf("%-35s %-10.2f%n", "Average Adult Literacy Rate (%)", avgLiteracyRate);
     }
 
     private static String formatNumber (Float number) {
